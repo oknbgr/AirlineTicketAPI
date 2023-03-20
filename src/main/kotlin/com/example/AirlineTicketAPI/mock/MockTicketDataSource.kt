@@ -15,4 +15,6 @@ class MockTicketDataSource : TicketDataSource {
 
     // In Kotlin, it is possible to use "=" to return something if there is nothing else to do inside the method
     override fun retrieveTickets(): Collection<Ticket> = tickets
+    override fun retrieveTicket(destination: String): Ticket = tickets.firstOrNull() { it.to == destination }
+        ?: throw NoSuchElementException("Could not find flights for $destination") // if it is null
 }

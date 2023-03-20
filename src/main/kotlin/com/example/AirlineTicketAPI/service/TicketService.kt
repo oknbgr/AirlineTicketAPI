@@ -10,4 +10,5 @@ class TicketService(
     private val dataSource: TicketDataSource
 ) {
     fun getTickets(): Collection<Ticket> = dataSource.retrieveTickets()
+    fun getTicket(destination: String): Ticket = dataSource.retrieveTicket(destination)
 }
