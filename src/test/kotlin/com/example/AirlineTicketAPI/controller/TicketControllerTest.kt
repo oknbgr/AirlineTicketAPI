@@ -1,5 +1,7 @@
 package com.example.AirlineTicketAPI.controller
 
+import com.example.AirlineTicketAPI.model.Ticket
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -11,17 +13,20 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class TicketControllerTest {
+internal class TicketControllerTest @Autowired constructor( // Spring Boot's way of dependency injection
     // Allows making requests to rest api without actually issuing any http request
-    @Autowired // Spring Boot's way of dependency injection
-    lateinit var mockMvc: MockMvc
+    val mockMvc: MockMvc,
+    // Serializing data when using http post
+    val objectMapper: ObjectMapper
+) {
     val baseUrl = "/api/tickets/"
 
     @Nested
-    @DisplayName("getTickets()")
+    @DisplayName("GET api/tickets/")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class GetTickets {
         @Test
@@ -42,7 +47,7 @@ internal class TicketControllerTest {
     }
 
     @Nested
-    @DisplayName("getTicket()")
+    @DisplayName("GET api/ticket/{to}")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class GetTicket {
         @Test
@@ -75,6 +80,50 @@ internal class TicketControllerTest {
                 // then
                 .andDo { print() }
                 .andExpect { status { isNotFound() } }
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /api/tickets/")
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    inner class PostNewTicket {
+        @Test
+        fun `should add a new ticket`() {
+            // given
+            val newTicket = Ticket(null, null, "kayseri", "gaziantep", 200)
+
+            // when
+            mockMvc.post(baseUrl) {
+                contentType = MediaType.APPLICATION_JSON
+                // for serializing to a json object
+                content = objectMapper.writeValueAsString(newTicket)
+            }
+
+                // then
+                .andDo { print() }
+                .andExpect {
+                    status { isCreated() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("$.from") { value("kayseri") }
+                    jsonPath("$.to") { value("gaziantep") }
+                    jsonPath("$.passengerCount") { value("200") }
+                }
+        }
+
+        @Test
+        fun `should return BAD REQUEST if ticket with given destination already exists`() {
+            // given
+            val invalidTicket = Ticket(null, null, "kayseri", "gaziantep", 200)
+
+            // when
+            mockMvc.post(baseUrl) {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(invalidTicket)
+            }
+
+                // then
+                .andDo { print() }
+                .andExpect { status { isBadRequest() } }
         }
     }
 }

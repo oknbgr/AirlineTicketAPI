@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 // Mock data source for testing methods before moving to SQL.
 @Repository // Marks this class as a data source in spring boot
 class MockTicketDataSource : TicketDataSource {
-    val tickets = listOf(
+    val tickets = mutableListOf(
         Ticket(null, null, "izmir", "istanbul", 100),
         Ticket(null, null, "ankara", "antalya", 150),
         Ticket(null, null, "kars", "sakarya", 50)
@@ -17,4 +17,12 @@ class MockTicketDataSource : TicketDataSource {
     override fun retrieveTickets(): Collection<Ticket> = tickets
     override fun retrieveTicket(destination: String): Ticket = tickets.firstOrNull() { it.to == destination }
         ?: throw NoSuchElementException("Could not find flights for $destination") // if it is null
+
+    override fun createTicket(ticket: Ticket): Ticket {
+        if (tickets.any { it.from == ticket.from && it.to == ticket.to }) {
+            throw IllegalArgumentException("This flight already exists")
+        }
+        tickets.add(ticket)
+        return ticket
+    }
 }

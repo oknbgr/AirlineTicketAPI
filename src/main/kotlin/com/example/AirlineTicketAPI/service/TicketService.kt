@@ -11,4 +11,5 @@ class TicketService(
 ) {
     fun getTickets(): Collection<Ticket> = dataSource.retrieveTickets()
     fun getTicket(destination: String): Ticket = dataSource.retrieveTicket(destination)
+    fun addTicket(ticket: Ticket): Ticket = dataSource.createTicket(ticket)
 }
