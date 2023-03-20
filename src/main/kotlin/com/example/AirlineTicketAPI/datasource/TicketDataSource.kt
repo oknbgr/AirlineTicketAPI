@@ -4,5 +4,5 @@ import com.example.AirlineTicketAPI.model.Ticket
 
 // Ticket Data Source (Data Retrieval, Storage)
 interface TicketDataSource {
-    fun getTickets(): Collection<Ticket>
+    fun retrieveTickets(): Collection<Ticket>
 }

@@ -14,5 +14,5 @@ class MockTicketDataSource : TicketDataSource {
     )
 
     // In Kotlin, it is possible to use "=" to return something if there is nothing else to do inside the method
-    override fun getTickets(): Collection<Ticket> = tickets
+    override fun retrieveTickets(): Collection<Ticket> = retrieveTickets()
 }

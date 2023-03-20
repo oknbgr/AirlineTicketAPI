@@ -9,7 +9,7 @@ internal class MockTicketDataSourceTest {
     @Test
     fun `should provide a collection of tickets`() {
         // when
-        val tickets = mockTicketDataSource.getTickets()
+        val tickets = mockTicketDataSource.retrieveTickets()
 
         // then
         assertThat(tickets).isNotEmpty
@@ -18,7 +18,7 @@ internal class MockTicketDataSourceTest {
     @Test
     fun `should provide some mock data`() {
         // when
-        val tickets = mockTicketDataSource.getTickets()
+        val tickets = mockTicketDataSource.retrieveTickets()
 
         // then
         // "it" keyword indicates what is returned from the method, like lambda symbol
