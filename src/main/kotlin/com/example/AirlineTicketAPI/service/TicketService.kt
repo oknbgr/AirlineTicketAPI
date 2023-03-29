@@ -1,8 +1,16 @@
 package com.example.AirlineTicketAPI.service
 
+import com.example.AirlineTicketAPI.dto.QueryTicketRequestDTO
+import com.example.AirlineTicketAPI.dto.QueryTicketResponseDTO
 import com.example.AirlineTicketAPI.model.Ticket
 import com.example.AirlineTicketAPI.repository.TicketRepository
 import com.example.AirlineTicketAPI.utils.mapper.QueryResponseMapper
+import org.springframework.beans.support.PagedListHolder
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 // Ticket Service: Service Layer (Services, Business Logic)
@@ -27,6 +35,27 @@ class TicketService(
             t.to,
             t.seats
     )
+
+    fun getPagination(
+            pageNum: Int,
+            pageSize: Int,
+            sortProperty: String,
+            list: MutableList<QueryTicketResponseDTO>
+    ): Page<QueryTicketResponseDTO> = PageImpl<QueryTicketResponseDTO> (
+                list.subList(
+                        (pageNum-1)*pageSize,
+                        (pageNum*pageSize)
+                ),
+                PageRequest.of(
+                        pageNum,
+                        pageSize,
+                        Sort.Direction.ASC,
+                        sortProperty
+                ),
+                list.size.toLong()
+    )
+
+
 
     //TODO: fun buyTicket()
 }
