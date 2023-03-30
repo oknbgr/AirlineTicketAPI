@@ -6,6 +6,7 @@ import com.example.AirlineTicketAPI.dto.QueryTicketRequestDTO
 import com.example.AirlineTicketAPI.dto.QueryTicketResponseDTO
 import com.example.AirlineTicketAPI.model.Ticket
 import com.example.AirlineTicketAPI.service.TicketService
+import com.example.AirlineTicketAPI.utils.mapper.BuyRequestMapper
 import com.example.AirlineTicketAPI.utils.mapper.QueryRequestMapper
 import com.example.AirlineTicketAPI.utils.mapper.QueryResponseMapper
 import org.springframework.data.domain.Page
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController
 class TicketController(
         private val queryRequestMapper: QueryRequestMapper,
         private val queryResponseMapper: QueryResponseMapper,
+        private val buyRequestMapper: BuyRequestMapper,
         private val service: TicketService
 ) {
     @ExceptionHandler(NoSuchElementException::class)
@@ -62,13 +64,10 @@ class TicketController(
         }
     }
 
-    /*
     @PutMapping("buy")
     fun buyTicket(
             @RequestBody dto: BuyTicketRequestDTO
     ): Any {
-
+        return service.buyTicket(buyRequestMapper.toEntity(dto))
     }
-
-     */
 }
