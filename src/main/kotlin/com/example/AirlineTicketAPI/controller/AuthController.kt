@@ -1,14 +1,15 @@
 package com.example.AirlineTicketAPI.controller
 
-import com.example.AirlineTicketAPI.dto.LoginDTO
+import com.example.AirlineTicketAPI.dto.user.LoginDTO
 import com.example.AirlineTicketAPI.dto.Message
-import com.example.AirlineTicketAPI.dto.RegisterDTO
+import com.example.AirlineTicketAPI.dto.user.RegisterDTO
 import com.example.AirlineTicketAPI.model.User
 import com.example.AirlineTicketAPI.service.UserService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CookieValue
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,18 +20,22 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.Date
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/user")
 class AuthController(
         private val userService: UserService
 ) {
     @PostMapping("register")
-    fun register(@RequestBody body: RegisterDTO): ResponseEntity<User> {
+    fun register(@RequestBody body: RegisterDTO): Any { //ResponseEntity<User> {
         val user = User()
         user.name = body.name
         user.email = body.email
         user.password = body.password
 
-        return ResponseEntity.ok(userService.save(user))
+        return try {
+            ResponseEntity.ok(userService.save(user))
+        } catch (e: DataIntegrityViolationException) {
+            Message("This mail is already in use.")
+        }
     }
 
     @PostMapping("login")
@@ -48,7 +53,7 @@ class AuthController(
         val jwt = Jwts.builder()
                 .setIssuer(issuer)
                 .setExpiration(Date(System.currentTimeMillis() + 60 * 24 * 1000)) // expires after 1 day
-                .signWith(SignatureAlgorithm.ES512, "secret") // secret key = "secret"
+                .signWith(SignatureAlgorithm.HS512, "secret") // secret key = "secret"
                 .compact()
 
         val cookie = Cookie("jwt", jwt)
@@ -59,7 +64,7 @@ class AuthController(
         return ResponseEntity.ok(Message("Login successful"))
     }
 
-    @GetMapping("user")
+    @GetMapping("status")
     fun user(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
         try {
             if(jwt == null)

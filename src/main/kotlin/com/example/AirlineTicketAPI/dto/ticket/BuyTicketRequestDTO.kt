@@ -1,4 +1,4 @@
-package com.example.AirlineTicketAPI.dto
+package com.example.AirlineTicketAPI.dto.ticket
 
 class BuyTicketRequestDTO {
     var id: Int = 0 // flight id is added for buying the exact ticket

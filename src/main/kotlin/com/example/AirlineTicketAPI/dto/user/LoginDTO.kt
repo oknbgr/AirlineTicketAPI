@@ -1,4 +1,4 @@
-package com.example.AirlineTicketAPI.dto
+package com.example.AirlineTicketAPI.dto.user
 
 class LoginDTO {
     val email = ""

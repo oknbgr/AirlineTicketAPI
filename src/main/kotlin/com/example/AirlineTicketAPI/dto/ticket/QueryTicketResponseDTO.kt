@@ -1,25 +1,18 @@
-package com.example.AirlineTicketAPI.dto
+package com.example.AirlineTicketAPI.dto.ticket
 
-class QueryTicketRequestDTO {
-    var date = ""
+open class QueryTicketResponseDTO {
+    var id: Int = 0 // = flight no
+        get() = field
+        set(value) {
+            field = value
+        }
+    var date  = ""
         get() = field
         set(value) {
             field = value
         }
 
-    var from = ""
-        get() = field
-        set(value) {
-            field = value
-        }
-
-    var to = ""
-        get() = field
-        set(value) {
-            field = value
-        }
-
-    var seats: Int = 0
+    var price: Double = 0.0
         get() = field
         set(value) {
             field = value

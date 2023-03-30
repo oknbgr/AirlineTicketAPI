@@ -32,7 +32,7 @@ interface TicketRepository: JpaRepository<Ticket, Int>
     @Modifying
     @Transactional
     @Query("UPDATE Ticket t SET t.seats = (t.seats-1) WHERE t.id = :id")
-    fun updateTicketSeats(
+    fun updateTicketSeatsById(
             @Param("id") id: Int
     )
 }

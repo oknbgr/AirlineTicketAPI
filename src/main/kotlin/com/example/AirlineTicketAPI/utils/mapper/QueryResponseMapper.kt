@@ -1,6 +1,6 @@
 package com.example.AirlineTicketAPI.utils.mapper
 
-import com.example.AirlineTicketAPI.dto.QueryTicketResponseDTO
+import com.example.AirlineTicketAPI.dto.ticket.QueryTicketResponseDTO
 import com.example.AirlineTicketAPI.model.Ticket
 import org.springframework.stereotype.Component
 

@@ -1,15 +1,14 @@
 package com.example.AirlineTicketAPI.controller
 
-import com.example.AirlineTicketAPI.dto.BuyTicketRequestDTO
+import com.example.AirlineTicketAPI.dto.ticket.BuyTicketRequestDTO
 import com.example.AirlineTicketAPI.dto.Message
-import com.example.AirlineTicketAPI.dto.QueryTicketRequestDTO
-import com.example.AirlineTicketAPI.dto.QueryTicketResponseDTO
+import com.example.AirlineTicketAPI.dto.ticket.QueryTicketRequestDTO
+import com.example.AirlineTicketAPI.dto.ticket.QueryTicketResponseDTO
 import com.example.AirlineTicketAPI.model.Ticket
 import com.example.AirlineTicketAPI.service.TicketService
 import com.example.AirlineTicketAPI.utils.mapper.BuyRequestMapper
 import com.example.AirlineTicketAPI.utils.mapper.QueryRequestMapper
 import com.example.AirlineTicketAPI.utils.mapper.QueryResponseMapper
-import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 

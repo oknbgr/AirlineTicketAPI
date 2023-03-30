@@ -1,6 +1,6 @@
 package com.example.AirlineTicketAPI.service
 
-import com.example.AirlineTicketAPI.dto.QueryTicketResponseDTO
+import com.example.AirlineTicketAPI.dto.ticket.QueryTicketResponseDTO
 import com.example.AirlineTicketAPI.model.Ticket
 import com.example.AirlineTicketAPI.repository.TicketRepository
 import com.example.AirlineTicketAPI.utils.mapper.QueryResponseMapper
@@ -50,8 +50,7 @@ class TicketService(
                 list.size.toLong()
     )
 
-    fun buyTicket(t: Ticket) {
-        val old: Ticket = dataSource.findTicketById(t.id)
-        dataSource.updateTicketSeats(old.id)
-    }
+    fun buyTicket(t: Ticket) = dataSource.updateTicketSeatsById(
+            dataSource.findTicketById(t.id).id
+    )
 }
