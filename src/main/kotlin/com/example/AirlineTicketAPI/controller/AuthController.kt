@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.Date
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("api") // api/user
 class AuthController(
         private val userService: UserService
 ) {
@@ -65,23 +65,26 @@ class AuthController(
     }
 
     @GetMapping("status")
-    fun user(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
-        try {
-            if(jwt == null)
-                return ResponseEntity.status(401).body(Message("Unauthenticated"))
-
-            return ResponseEntity.ok(
-                    userService.findById(
-                            Jwts.parser()
-                                    .setSigningKey("secret")
-                                    .parseClaimsJws(jwt)
-                                    .body
-                                    .issuer
-                                    .toInt()
-                    )
-            )
-        } catch (e: Exception) {
-            return ResponseEntity.status(401).body(Message("Unauthenticated"))
+    fun user(
+            @CookieValue("jwt") jwt: String?
+    ): ResponseEntity<Any> {
+        if(jwt == null) {
+            return ResponseEntity.status(401).body(Message("Unauthenticated!"))
+        } else {
+            return try {
+                ResponseEntity.ok(
+                        userService.findById(
+                                Jwts.parser()
+                                        .setSigningKey("secret")
+                                        .parseClaimsJws(jwt)
+                                        .body
+                                        .issuer
+                                        .toInt()
+                        )
+                )
+            } catch (e: Exception) {
+                ResponseEntity.status(401).body(Message("Unauthenticated!"))
+            }
         }
     }
 
@@ -92,6 +95,6 @@ class AuthController(
 
         response.addCookie(cookie)
 
-        return ResponseEntity.ok(Message("Logged out successfully"))
+        return ResponseEntity.ok(Message("Logged out successfully."))
     }
 }

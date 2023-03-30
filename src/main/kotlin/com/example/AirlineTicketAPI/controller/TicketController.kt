@@ -6,23 +6,19 @@ import com.example.AirlineTicketAPI.dto.ticket.QueryTicketRequestDTO
 import com.example.AirlineTicketAPI.dto.ticket.QueryTicketResponseDTO
 import com.example.AirlineTicketAPI.model.Ticket
 import com.example.AirlineTicketAPI.service.TicketService
+import com.example.AirlineTicketAPI.service.UserService
 import com.example.AirlineTicketAPI.utils.mapper.BuyRequestMapper
 import com.example.AirlineTicketAPI.utils.mapper.QueryRequestMapper
 import com.example.AirlineTicketAPI.utils.mapper.QueryResponseMapper
+import io.jsonwebtoken.Jwts
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/tickets/")
 class TicketController(
+        private val userService: UserService,
         private val queryRequestMapper: QueryRequestMapper,
         private val queryResponseMapper: QueryResponseMapper,
         private val buyRequestMapper: BuyRequestMapper,
@@ -46,7 +42,6 @@ class TicketController(
     @GetMapping("getMyTickets")
     fun queryTickets(
             @RequestBody dto: QueryTicketRequestDTO,
-           // @RequestParam("page", defaultValue = "1") page: Int
     ): Any  { // originally returns Page<QueryTicketRequestDTO> but changed to Any for exception handling
         val tickets = service.queryTickets(queryRequestMapper.toEntity(dto))
         val dtos = mutableListOf<QueryTicketResponseDTO>()
@@ -64,8 +59,25 @@ class TicketController(
 
     @PutMapping("buy")
     fun buyTicket(
-            @RequestBody dto: BuyTicketRequestDTO
+            @CookieValue("jwt") jwt: String?,
+            @RequestBody dto: BuyTicketRequestDTO,
     ): Any {
-        return service.buyTicket(buyRequestMapper.toEntity(dto))
+        if(jwt == null) {
+            return ResponseEntity.status(401).body(Message("You need to login for buying tickets."))
+        } else {
+            val user = ResponseEntity.ok(
+                    userService.findById(
+                         Jwts.parser()
+                                .setSigningKey("secret")
+                                .parseClaimsJws(jwt)
+                                .body
+                                .issuer
+                                .toInt())
+                        ).body
+
+            service.buyTicket(buyRequestMapper.toEntity(dto))
+
+            return Message("Purchase successful. Flight id: ${dto.id}. Happy flights ${user?.name}!")
+        }
     }
 }
