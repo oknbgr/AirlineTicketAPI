@@ -65,19 +65,26 @@ class TicketController(
         if(jwt == null) {
             return ResponseEntity.status(401).body(Message("You need to login for buying tickets."))
         } else {
-            val user = ResponseEntity.ok(
-                    userService.findById(
-                         Jwts.parser()
+            val user = ResponseEntity.ok( // validating user
+                        userService.findById(
+                             Jwts.parser()
                                 .setSigningKey("secret")
                                 .parseClaimsJws(jwt)
                                 .body
                                 .issuer
-                                .toInt())
-                        ).body
+                                .toInt()
+                    )
+            ).body
 
-            service.buyTicket(buyRequestMapper.toEntity(dto))
+            service.buyTicket(buyRequestMapper.toEntity(dto)) // performing transaction
 
-            return Message("Purchase successful. Flight id: ${dto.id}. Happy flights ${user?.name}!")
+            // returning success message
+            return Message(
+                    "Purchase successful. " +
+                    "Flight id: ${dto.id}. " +
+                    "Please be at airport at ${dto.date}. " +
+                    "Happy flights ${user?.name}!"
+            )
         }
     }
 }
