@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+// Presentation Layer: Ticket Controller
 @RestController
 @RequestMapping("/api/tickets/")
 class TicketController(
@@ -65,7 +66,8 @@ class TicketController(
         if(jwt == null) {
             return ResponseEntity.status(401).body(Message("You need to login for buying tickets."))
         } else {
-            val user = ResponseEntity.ok( // validating user
+            // validating user
+            val user = ResponseEntity.ok(
                         userService.findById(
                              Jwts.parser()
                                 .setSigningKey("secret")
@@ -76,7 +78,8 @@ class TicketController(
                     )
             ).body
 
-            service.buyTicket(buyRequestMapper.toEntity(dto)) // performing transaction
+            // performing transaction
+            service.buyTicket(buyRequestMapper.toEntity(dto))
 
             // returning success message
             return Message(

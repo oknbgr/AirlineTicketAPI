@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
-// Ticket Service: Service Layer (Services, Business Logic)
+// Business Layer: Ticket Service
 @Service
 class TicketService(
         private val mapper: QueryResponseMapper,

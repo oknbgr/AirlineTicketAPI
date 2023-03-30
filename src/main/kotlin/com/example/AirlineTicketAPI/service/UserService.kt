@@ -4,6 +4,7 @@ import com.example.AirlineTicketAPI.model.User
 import com.example.AirlineTicketAPI.repository.UserRepository
 import org.springframework.stereotype.Service
 
+// Business Layer: User Service
 @Service
 class UserService(
         private val userRepository: UserRepository

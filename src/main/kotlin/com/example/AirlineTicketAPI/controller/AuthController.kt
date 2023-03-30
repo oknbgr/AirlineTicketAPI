@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.Date
 
+// Presentation Layer: Authentication Controller
 @RestController
-@RequestMapping("api") // api/user
+@RequestMapping("api") // not "api/user", otherwise other controllers may not see our jwt
 class AuthController(
         private val userService: UserService
 ) {
